@@ -55,3 +55,26 @@ class Message(models.Model):
         messages.sort(key=lambda x: x.date, reverse=False)
         return messages
 
+    def get_message_list(self, u):
+        # get all messages
+        m = []  # stores messages sorted by newst
+        j = []  # stores all usernames after removing duplicates
+        k = []  # stores sorted messages form sorted usernames
+
+        for message in Message.objects.all():
+            for_you = message.recipient == u  # message received by user
+            from_you = message.sender == u  # message sent by user
+
+            if for_you or from_you:
+                m.append(message)
+                m.sort(key=lambda x: x.sender.username)  # sort messages by senders
+                m.sort(key=lambda x: x.date, reverse=True)  # sort the messages by date
+
+        # remove duplicates usernames and get single message(latest) per username(other user) (between you & other user)
+        for i in m:
+            if i.sender.username not in j or i.recipient.username not in j:
+                j.append(i.sender.username)
+                j.append(i.recipient.username)
+                k.append(i)
+
+        return k
