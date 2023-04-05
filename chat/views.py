@@ -74,3 +74,7 @@ class UserListView(LoginRequiredMixin, ListView):
         user = UserProfile.objects.get(pk=self.request.user.pk)
         context['users'] = UserProfile.objects.exclude(pk=user.pk)  # get all users except you
         return context
+
+
+class InboxView(ListView):
+    pass
